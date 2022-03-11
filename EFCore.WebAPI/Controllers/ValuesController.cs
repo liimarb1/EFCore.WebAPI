@@ -1,6 +1,7 @@
 ﻿using EFCore.Dominio;
 using EFCore.Repo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,10 @@ namespace EFCore.WebAPI.Controllers
         [HttpGet("filtro/{nome}")]
         public ActionResult GetFiltro(string nome)
         {
-             var listHeroi = _context.Herois
-                .Where(h => h.Nome.Contains(nome))
-                .ToList(); 
+            var listHeroi = _context.Herois
+               .Where(h => EF.Functions.Like(h.Nome, $"%{nome}%"))
+               .OrderBy(h => h.Id)
+               .LastOrDefault();
            //var listHeroi = (from heroi in _context.Herois
            //                 where heroi.Nome.Contains(nome) 
            //                 select heroi).ToList();
